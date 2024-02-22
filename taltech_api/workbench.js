@@ -1,11 +1,20 @@
 const { search } = require('./search');
-const { ical } = require('./ical');
+const { get_ical } = require('./get_ical');
 
-const repl = require('repl');
-const replServer = repl.start({
-    prompt: "SWP > ",
-    useGlobal: true,
-});
+(async () => {
+    const raw_subjects = await search("");
+    let subject_ids = {};
+    raw_subjects.forEach(subject => subject_ids[subject[1]] = subject[0]);
 
-replServer.context.search = search;
-replServer.context.ical = ical;
+    console.log(subject_ids);
+
+    const repl = require('repl');
+    const replServer = repl.start({
+        prompt: "SWP > ",
+        useGlobal: true,
+    });
+    
+    replServer.context.search = search;
+    replServer.context.get_ical = (async (code) => await get_ical(code, subject_ids[code]));
+
+})();

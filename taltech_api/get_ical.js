@@ -1,4 +1,6 @@
-async function ical(code, id) {
+const ical = require('ical');
+
+async function get_ical(code, id) {
   const res = await fetch(
     `https://tunniplaan.taltech.ee/tt/api/public/ical`, {
     "headers": {
@@ -24,7 +26,7 @@ async function ical(code, id) {
 
   const json = await res.json();
 
-  return json["content"];
+  return ical.parseICS(json["content"]);
 }
 
-module.exports.ical = ical;
+module.exports.get_ical = get_ical;
