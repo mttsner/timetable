@@ -1,6 +1,31 @@
-async function search(query) {
-    const res = await fetch(
-        `https://tunniplaan.taltech.ee/tt/api/public/ac?ttId=3&term=${query}&lang=et`, {
+/**
+ * Output JSON:
+ * [
+ *   {
+ *     "currentId": number,
+ *     "currentName": string,
+ *     "currentNameEn": string,
+ *     "currentSessDate": string,
+ *   },
+ *   ...
+ * ]
+ * 
+ * Example output:
+ * [
+ *   {
+ *     "currentId": 3,
+ *     "currentName": '2023/2024 kevad',
+ *     "currentNameEn": '2023/2024  Spring',
+ *     "currentSessDate": '2024-05-20',
+ *     "nextId": null,
+ *     "nextName": null,
+ *     "nextNameEn": null,
+ *     "isNextPublished": null
+ *   }
+ * ]
+ */
+async function getTimetables() {
+    const res = await fetch("https://tunniplaan.taltech.ee/tt/api/public/timetables", {
         "headers": {
             "accept": "application/json, text/plain, */*",
             "accept-language": "en-US,en;q=0.9,et;q=0.8",
@@ -23,7 +48,7 @@ async function search(query) {
 
     const json = await res.json();
 
-    return json["subjects"].map(row => ([ row["id"], row["code"] ]));
+    return [json];
 }
 
-module.exports.search = search;
+module.exports.getTimetables = getTimetables;
