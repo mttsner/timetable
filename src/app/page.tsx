@@ -1,7 +1,7 @@
-import Image from "next/image";
+import Schedule from "./schedule";
 
 export default function Home() {
   return (
-    <div>Hello world</div>
+    <Schedule></Schedule>
   );
 }
