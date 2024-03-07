@@ -1,3 +1,4 @@
+"use server"
 
 /**
  * Output JSON:
@@ -31,7 +32,7 @@
  * ]
  * 
  */
-async function getDepartments(timetableId) {
+export async function getDepartments(timetableId) {
     const res = await fetch("https://tunniplaan.taltech.ee/tt/api/public/departments?ttId=" + (+timetableId), {
         "headers": {
             "accept": "application/json, text/plain, */*",
@@ -49,7 +50,7 @@ async function getDepartments(timetableId) {
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
-        "mode": "cors",
+        "mode": "no-cors",
         "credentials": "include"
     });
 
@@ -57,5 +58,3 @@ async function getDepartments(timetableId) {
 
     return json["departments"];
 }
-
-module.exports.getDepartments = getDepartments;

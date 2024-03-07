@@ -1,3 +1,4 @@
+"use server"
 
 /**
  * Returns the timetable of selected program.
@@ -90,7 +91,7 @@ async function getProgram(programId, curriculumVersionId, departmentId, timetabl
             ttId: timetableId,
         }),
         "method": "POST",
-        "mode": "cors",
+        "mode": "no-cors",
         "credentials": "include"
     });
 

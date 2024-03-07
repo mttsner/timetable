@@ -1,18 +1,15 @@
-const { getTimetables } = require('../taltech_api/get_timetables');
-const { getDepartments } = require('../taltech_api/get_departments');
-const { getProgram } = require('../taltech_api/get_program');
+const { getTimetables } = require('./get_timetables');
+const { getDepartments } = require('./get_departments');
+const { getProgram } = require('./get_program');
 
-const chosenCurriculumCode = document.getElementById("search").value;
-
-async function Search() {
+(async () => {
     const timetables = await getTimetables();
+    console.log(timetables);
+
     const chosenTimetableId = timetables[0]["currentId"]
 
     const departments = await getDepartments(chosenTimetableId);
-
-    let chosenDepartmentID;
-    let chosenProgramID;
-    let chosenCurriculumVersionID;
+    console.log(JSON.stringify(departments, null, 2));
 
     departments.forEach(department => {
         console.log("departmentId:", department["departmentId"], "nameEt:", department["nameEt"]);
@@ -22,14 +19,19 @@ async function Search() {
 
             curriculum["studentGroups"].forEach(studentGroup => {
                 console.log("       ", "id:", studentGroup["id"], "code:", studentGroup["code"], "curriculumVersionId:", studentGroup["curriculumVersionId"], "nameEt:", studentGroup["specNameEt"]);
-                if (chosenCurriculumCode.localeCompare(studentGroup["code"] == 0)) {
-                    chosenDepartmentID = department["departmendID"];
-                    chosenProgramID = studentGroup["id"];
-                    chosenCurriculumVersionID = studentGroup["curriculumVersionId"];
-                }
             });
         });
     });
+    
+    const chosenDepartmentID = departments[0]["departmentId"];
+    const chosenCurriculumCode = departments[0]["curriculums"][0]["code"];
+    const chosenProgramID = departments[0]["curriculums"][0]["studentGroups"][0]["id"];
+    const chosenCurriculumVersionID = departments[0]["curriculums"][0]["studentGroups"][0]["curriculumVersionId"];
+
+    console.log("chosenDepartmentID:", chosenDepartmentID);
+    console.log("chosenCurriculumCode:", chosenCurriculumCode);
+    console.log("chosenProgramID:", chosenProgramID);
+    console.log("chosenCurriculumVersionID:", chosenCurriculumVersionID);
 
     const program = await getProgram(
         chosenProgramID,
@@ -37,5 +39,6 @@ async function Search() {
         chosenDepartmentID,
         chosenTimetableId
     );
-    document.getElementById("result").innerHTML = JSON.stringify(program, null, 2);
-}
+
+    console.log(JSON.stringify(program, null, 2));
+})();
