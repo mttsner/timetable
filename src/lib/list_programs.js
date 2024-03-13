@@ -2,7 +2,6 @@
 
 export async function listPrograms(departments, chosenCurriculumCode) {
     
-    let found = false;
     let curriculums = [];
 
     departments.forEach(department => {

@@ -1,7 +1,5 @@
 "use server"
 
-const { getTimetables } = require('../taltech_api/get_timetables');
-const { getDepartments } = require('../taltech_api/get_departments');
 const { getProgram } = require('../taltech_api/get_program');
 
 export async function search(timetableId, departments, chosenCurriculumCode) {
@@ -9,9 +7,7 @@ export async function search(timetableId, departments, chosenCurriculumCode) {
     let found = false;
     let chosenDepartmentID;
     let chosenProgramID;
-    let chosenCurriculumVersionID;
-
-    
+    let chosenCurriculumVersionID;    
 
     departments.forEach(department => {
         if(found) return;
@@ -41,5 +37,5 @@ export async function search(timetableId, departments, chosenCurriculumCode) {
         timetableId
     );
 
-    return JSON.stringify(program, null, 2);
+    return program;
 }

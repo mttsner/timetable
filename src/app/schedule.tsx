@@ -1,5 +1,15 @@
-import { iacb } from "@/app/data";
-import { HTMLAttributes } from "react";
+"use client"
+
+// import { iacb } from "@/app/data";
+import { HTMLAttributes, useEffect, useState } from "react";
+import { search } from '@/lib/search';
+import { listPrograms } from '@/lib/list_programs';
+import { getDepartments } from "@/taltech_api/get_departments";
+import { getTimetables } from "@/taltech_api/get_timetables";
+import { getCourses } from "@/taltech_api/get_courses";
+import { listSubjects } from "@/lib/list_subjects";
+import { combineLayers } from "@/taltech_api/timetable_editor";
+import { searchSubject } from "@/lib/search_subject";
 
 function Card({ style, children }: HTMLAttributes<HTMLDivElement>) {
     return (
@@ -46,6 +56,7 @@ export default function Schedule() {
         return ranges;
     };
 
+
     const generateTimeStrings = () => {
         const startHour = 8;
         const endHour = 22;
@@ -69,9 +80,73 @@ export default function Schedule() {
             .filter((timeString) => timeString !== null); // Filter out null values
     };
 
+    const [ searchQuery, setSearchQuery ] = useState("");
+    const [ resultProgram, setResultProgram ] = useState([]);
+    const [ resultSubject, setResultSubject ] = useState([]);
+    const [ timetableId, setTimetableId ] = useState(0);
+    const [ departments, setDepartments ] = useState([]);
+    const [ selectedStudentGroup, setSelectedStudentGroup ] = useState("");
+    const [ selectedSubject , setSelectedSubject ] = useState("");
+    const [ schedule, setSchedule ] = useState({ weekDays: [ { dow: "", rows: [ { startTime: "", endTime: "", subjectName: "", weekCodes: [] } ] } ] } );
+    const [ subjects, setSubjects ] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            const timetableId = (await getTimetables())[0]["currentId"];
+            setTimetableId(timetableId);
+            const department = await getDepartments(timetableId);
+            setDepartments(department);
+            const subject = await getCourses(timetableId);
+            setSubjects(subject);
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            setResultProgram(await listPrograms(departments, searchQuery));
+            setResultSubject(await listSubjects(subjects, searchQuery));
+        })();
+    }, [searchQuery, departments, subjects]);
+    
+    async function onSubmitProgramme() {
+        setSchedule(await search(timetableId, departments, selectedStudentGroup));
+    }
+
+    async function onAddSubject() {
+        const subject = await searchSubject(timetableId, subjects, selectedSubject);
+        const newSchedule = combineLayers(schedule, subject);
+        setSchedule(newSchedule);
+    }
+
     return (
         <>
-            {iacb.weekDays.map((day) => {
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 16, padding: 16 }}>
+                <form>
+                    <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Enter your program code"></input>
+                </form>
+            
+                <div>
+                    <select value={selectedStudentGroup} onChange={(e) => setSelectedStudentGroup(e.target.value)}>
+                        <optgroup label="Programmes">
+                            { resultProgram.map((program) => (
+                                <option key={program} value={program}>{program}</option>
+                            )) }
+                        </optgroup>
+                    </select>
+                    <button onClick={onSubmitProgramme}>Submit Programme</button>
+                </div>
+            </div>
+            <div>
+                    <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)}>
+                        <optgroup label="Subjects">
+                            { resultSubject.map((subject) => (
+                                <option key={subject} value={subject}>{subject}</option>
+                            )) }
+                        </optgroup>
+                    </select>
+                    <button onClick={onAddSubject}>Add Subject</button>
+                </div>
+            {schedule.weekDays.map((day) => {
                 return (
                     <div className="overflow-x-auto">
                         {day.dow}

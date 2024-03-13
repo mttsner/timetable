@@ -1,4 +1,4 @@
-function removeLayer(programJson, subjectCode) {
+export function removeLayer(programJson, subjectCode) {
     let newWeekDays = programJson["weekDays"].map(
         (weekDay) => weekDay["rows"].filter(
             (row) => row["subjectCode"] !== subjectCode
@@ -14,7 +14,7 @@ function removeLayer(programJson, subjectCode) {
     };
 }
 
-function combineLayers(programJson, otherProgramJson) {
+export function combineLayers(programJson, otherProgramJson) {
     
     let weekDays = [
         { "dow": 1, rows: [] },
