@@ -2,14 +2,12 @@
 
 // import { iacb } from "@/app/data";
 import { HTMLAttributes, useEffect, useState } from "react";
-import { search } from '@/lib/search';
-import { listPrograms } from '@/lib/list_programs';
+import { search, searchSubject } from '@/lib/search';
+import { listPrograms, listSubjects, listSelected } from '@/lib/list';
 import { getDepartments } from "@/taltech_api/get_departments";
 import { getTimetables } from "@/taltech_api/get_timetables";
 import { getCourses } from "@/taltech_api/get_courses";
-import { listSubjects } from "@/lib/list_subjects";
-import { combineLayers } from "@/taltech_api/timetable_editor";
-import { searchSubject } from "@/lib/search_subject";
+import { combineLayers, removeLayer } from "@/taltech_api/timetable_editor";
 
 function Card({ style, children }: HTMLAttributes<HTMLDivElement>) {
     return (
@@ -56,7 +54,6 @@ export default function Schedule() {
         return ranges;
     };
 
-
     const generateTimeStrings = () => {
         const startHour = 8;
         const endHour = 22;
@@ -89,7 +86,10 @@ export default function Schedule() {
     const [ selectedSubject , setSelectedSubject ] = useState("");
     const [ schedule, setSchedule ] = useState({ weekDays: [ { dow: "", rows: [ { startTime: "", endTime: "", subjectName: "", weekCodes: [] } ] } ] } );
     const [ subjects, setSubjects ] = useState([]);
+    const [ selectedId, setSelectedId ] = useState(0);
+    const [ list, setList] = useState([]);
 
+    // Upon opening the site, fetch the timetable id, departments and subjects
     useEffect(() => {
         (async () => {
             const timetableId = (await getTimetables())[0]["currentId"];
@@ -101,51 +101,81 @@ export default function Schedule() {
         })();
     }, []);
 
+    // Whenever the search query changes, update the list of programs and subjects
     useEffect(() => {
         (async () => {
             setResultProgram(await listPrograms(departments, searchQuery));
             setResultSubject(await listSubjects(subjects, searchQuery));
         })();
     }, [searchQuery, departments, subjects]);
-    
-    async function onSubmitProgramme() {
-        setSchedule(await search(timetableId, departments, selectedStudentGroup));
+
+    // Whenever the schedule changes, uptdate the list of selected subjects
+    useEffect(() => {
+        (async () => {
+            setList(await listSelected(schedule));
+        })()
+    }, [schedule]);
+
+    // Function for adding a layer on the schedule
+    async function onAdd(type) {
+        if (type) {
+            setSchedule(await search(timetableId, departments, selectedStudentGroup));
+        }
+        else {
+            const subject = await searchSubject(timetableId, subjects, selectedSubject);
+            const newSchedule = await combineLayers(schedule, subject);
+            setSchedule(newSchedule);
+        }
     }
 
-    async function onAddSubject() {
-        const subject = await searchSubject(timetableId, subjects, selectedSubject);
-        const newSchedule = combineLayers(schedule, subject);
-        setSchedule(newSchedule);
+    async function onRemove() {
+        setSchedule(await removeLayer(schedule, selectedSubject));
     }
 
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 16, padding: 16 }}>
                 <form>
-                    <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Enter your program code"></input>
+                    <input list="Programmes" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Enter the code"></input>
                 </form>
             
                 <div>
-                    <select value={selectedStudentGroup} onChange={(e) => setSelectedStudentGroup(e.target.value)}>
+                    <select onClick={(e) => { 
+                    if (e.target.id.startsWith("P_")) {
+                        setSelectedStudentGroup(e.target.value);
+                        setSelectedId(1);
+                    }
+                    else {
+                        setSelectedSubject(e.target.value);
+                        setSelectedId(0);
+                    }
+                    }}>
                         <optgroup label="Programmes">
                             { resultProgram.map((program) => (
-                                <option key={program} value={program}>{program}</option>
+                                <option id={"P_" + program} key={program} value={program}>{program}</option>
                             )) }
                         </optgroup>
-                    </select>
-                    <button onClick={onSubmitProgramme}>Submit Programme</button>
-                </div>
-            </div>
-            <div>
-                    <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)}>
                         <optgroup label="Subjects">
                             { resultSubject.map((subject) => (
-                                <option key={subject} value={subject}>{subject}</option>
+                                <option id={"S_" + subject} key={subject} value={subject}>{subject}</option>
                             )) }
                         </optgroup>
                     </select>
-                    <button onClick={onAddSubject}>Add Subject</button>
                 </div>
+                <button onClick={() => onAdd(selectedId)}>Add</button>
+            </div>
+            <div>
+                <select>
+                    <optgroup label="Subjects" onClick={(e) => {setSelectedSubject(e.target.value)}}>
+                        { list.map((subject) => (
+                            <option key={subject} value={subject}>{subject}</option>
+                        ))}
+                    </optgroup>
+                </select>
+            </div>
+            <div>
+                <button onClick={() => onRemove()}>Remove</button>
+            </div>
             {schedule.weekDays.map((day) => {
                 return (
                     <div className="overflow-x-auto">

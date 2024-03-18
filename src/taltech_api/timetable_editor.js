@@ -1,12 +1,14 @@
 export function removeLayer(programJson, subjectCode) {
-    let newWeekDays = programJson["weekDays"].map(
+    let newWeekDays = { weekDays: [ { dow: "", rows: [ { startTime: "", endTime: "", subjectName: "", weekCodes: [] } ] } ] };
+    newWeekDays = programJson["weekDays"].map(
         (weekDay) => weekDay["rows"].filter(
             (row) => row["subjectCode"] !== subjectCode
         )
     );
-
+    console.log(newWeekDays);
+    
     newWeekDays = newWeekDays.filter(
-        (weekDay) => weekDay["rows"].length > 0
+        (weekDay = { weekDays: [ { dow: "", rows: [ { startTime: "", endTime: "", subjectName: "", weekCodes: [] } ] } ] }) => weekDay["rows"].length > 0
     );
     
     return {
