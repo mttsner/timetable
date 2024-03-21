@@ -110,5 +110,7 @@ function removeSubject(scheduleJson, subjectCode) {
     };
 }
 
-module.exports.removeLayer = removeLayer;
-module.exports.combineLayers = combineLayers;
+module.exports.removeEmptyWeekdays = removeEmptyWeekdays;
+module.exports.removeStudentGroup = removeStudentGroup;
+module.exports.combineSchedules = combineSchedules;
+module.exports.removeSubject = removeSubject;
