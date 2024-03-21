@@ -28,7 +28,6 @@ export async function getCourses(timetableId) {
     return json["subjects"];
 }
 
-module.exports.getTimetables = getTimetables;
 
 // Use getTimetables() and filter by "currentSessDate" field in outputtes JSON
 async function getTimetablesInRange(startDate, endDate) {
