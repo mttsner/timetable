@@ -41,7 +41,7 @@ async function getTimetablesInRange(startDate, endDate) {
     });
 }
 
-(async () => {
+/* (async () => {
     const timetables = await getTimetables();
     console.log(timetables);
 
@@ -49,4 +49,4 @@ async function getTimetablesInRange(startDate, endDate) {
     timetables.forEach(timetable => {
         console.log("currentId:", timetable["currentId"], "currentName:", timetable["currentName"], "currentNameEn:", timetable["currentNameEn"], "currentSessDate:", timetable["currentSessDate"]);
     });
-}
+}) */
