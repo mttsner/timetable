@@ -39,6 +39,6 @@ const { getProgram } = require('./get_program');
         chosenDepartmentID,
         chosenTimetableId
     );
-
+    
     console.log(JSON.stringify(program, null, 2));
 })();
