@@ -96,9 +96,12 @@ function combineSchedules(scheduleJson, otherScheduleJson) {
  */
 function removeSubject(scheduleJson, subjectCode) {
     let newWeekDays = scheduleJson["weekDays"].map(
-        (weekDay) => weekDay["rows"].filter(
-            (row) => row["subjectCode"] !== subjectCode
-        )
+        (weekDay) => ({
+            ...weekDay,
+            "rows": weekDay["rows"].filter(
+                (row) => row["subjectCode"] !== subjectCode
+            )
+        })
     );
 
     newWeekDays = newWeekDays.filter(
