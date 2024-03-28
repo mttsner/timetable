@@ -7,13 +7,16 @@ import { listPrograms, listSubjects, listSelected } from '@/lib/list';
 import { getDepartments } from "@/taltech_api/get_departments";
 import { getTimetables } from "@/taltech_api/get_timetables";
 import { getCourses } from "@/taltech_api/get_courses";
-import { combineLayers, removeLayer } from "@/taltech_api/timetable_editor";
+import { combineSchedules, removeStudentGroup, removeSubject } from "@/taltech_api/timetable_editor";
+import "@/app/page.css";
 
-function Card({ style, children }: HTMLAttributes<HTMLDivElement>) {
+function Card({ style, children, onClick, onMouseOver }: HTMLAttributes<HTMLDivElement>) {
     return (
         <div
             style={style}
-            className="bg-red-400 grid text-ellipsis overflow-hidden text-nowrap p-1 m-0.5"
+            className="rounded-xl bg-red-400 grid text-ellipsis overflow-hidden text-nowrap p-1 m-0.5"
+            onClick={onClick}
+            onMouseOver={onMouseOver}
         >
             {children}
         </div>
@@ -83,11 +86,22 @@ export default function Schedule() {
     const [ timetableId, setTimetableId ] = useState(0);
     const [ departments, setDepartments ] = useState([]);
     const [ selectedStudentGroup, setSelectedStudentGroup ] = useState("");
+    const [ currentGroup, setCurrentGroup ] = useState("");
     const [ selectedSubject , setSelectedSubject ] = useState("");
-    const [ schedule, setSchedule ] = useState({ weekDays: [ { dow: "", rows: [ { startTime: "", endTime: "", subjectName: "", weekCodes: [] } ] } ] } );
+    const [ schedule, setSchedule ] = useState({ weekDays: [ { dow: 0, rows: [ { startTime: "", endTime: "", subjectName: "", weekCodes: [] } ] } ] } );
     const [ subjects, setSubjects ] = useState([]);
     const [ selectedId, setSelectedId ] = useState(0);
-    const [ list, setList] = useState([]);
+    const [ list, setList ] = useState([]);
+    const weekDays = {
+        1: "Monday",
+        2: "Tuesday",
+        3: "Wednesday",
+        4: "Thursday",
+        5: "Friday",
+        6: "Saturday",
+        7: "Sunday",
+    };
+    const [ currentDow, setCurrentDow ] = useState(1);
 
     // Upon opening the site, fetch the timetable id, departments and subjects
     useEffect(() => {
@@ -112,6 +126,19 @@ export default function Schedule() {
     // Whenever the schedule changes, uptdate the list of selected subjects
     useEffect(() => {
         (async () => {
+            let found = false;
+            if (schedule.weekDays.length > 0) {
+                schedule.weekDays.forEach((day) => {
+                    if (day.dow === currentDow) {
+                        setCurrentDow(day.dow);
+                        found = true;
+                        return;
+                    }
+                });
+            }
+            if (!found) {
+                setCurrentDow(schedule.weekDays[0].dow);
+            }
             setList(await listSelected(schedule));
         })()
     }, [schedule]);
@@ -119,28 +146,43 @@ export default function Schedule() {
     // Function for adding a layer on the schedule
     async function onAdd(type) {
         if (type) {
-            setSchedule(await search(timetableId, departments, selectedStudentGroup));
+            if (currentGroup === "") {
+                setSchedule(await search(timetableId, departments, selectedStudentGroup));
+                setCurrentGroup(selectedStudentGroup);
+            }
+            else {
+                setSchedule(combineSchedules(await search(timetableId, departments, selectedStudentGroup), removeStudentGroup(schedule, currentGroup)));
+                setCurrentGroup(selectedStudentGroup);
+                // setSchedule(combineSchedules(schedule, await search(timetableId, departments, selectedStudentGroup)));
+            }
         }
         else {
             const subject = await searchSubject(timetableId, subjects, selectedSubject);
-            const newSchedule = await combineLayers(schedule, subject);
+            const newSchedule = combineSchedules(schedule, subject);
             setSchedule(newSchedule);
         }
     }
 
     async function onRemove() {
-        setSchedule(await removeLayer(schedule, selectedSubject));
+        console.log(selectedSubject);
+        setSchedule(removeSubject(schedule, selectedSubject));
     }
 
     return (
         <>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: 16, padding: 16 }}>
-                <form>
-                    <input list="Programmes" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} type="text" placeholder="Enter the code"></input>
-                </form>
-            
-                <div>
-                    <select onClick={(e) => { 
+            <title>TalTech Scheduler</title>
+            <div id="searchBar">
+                <div class="search-dropdown">
+                    <input 
+                        id="search" 
+                        list="Programmes" 
+                        value={searchQuery} 
+                        onChange={(e) => setSearchQuery(e.target.value)} 
+                        type="text" 
+                        placeholder="Enter a subject/program"
+                        autoComplete="off">
+                    </input>
+                    <select id="select" onClick={(e) => { 
                     if (e.target.id.startsWith("P_")) {
                         setSelectedStudentGroup(e.target.value);
                         setSelectedId(1);
@@ -150,76 +192,148 @@ export default function Schedule() {
                         setSelectedId(0);
                     }
                     }}>
-                        <optgroup label="Programmes">
+                        <optgroup label="Study Plans">
                             { resultProgram.map((program) => (
-                                <option id={"P_" + program} key={program} value={program}>{program}</option>
+                                <option 
+                                    id={"P_" + program} 
+                                    key={program} 
+                                    value={program}
+                                >
+                                    {program}
+                                </option>
                             )) }
                         </optgroup>
-                        <optgroup label="Subjects">
+                        <optgroup label="Single Subjects">
                             { resultSubject.map((subject) => (
-                                <option id={"S_" + subject} key={subject} value={subject}>{subject}</option>
+                                <option 
+                                    id={"S_" + subject} 
+                                    key={subject} 
+                                    value={subject}
+                                >
+                                    {subject}
+                                </option>
                             )) }
                         </optgroup>
                     </select>
                 </div>
-                <button onClick={() => onAdd(selectedId)}>Add</button>
+                <button 
+                    id="add" 
+                    onClick={() => onAdd(selectedId)}
+                >
+                    🔎
+                </button>
+                <button 
+                    id="export" 
+                    onClick={() => console.log(schedule)}
+                >
+                    Export
+                </button>
             </div>
-            <div>
-                <select>
-                    <optgroup label="Subjects" onClick={(e) => {setSelectedSubject(e.target.value)}}>
+            <div id="removeBar">
+                <select 
+                    id="subjects" 
+                    onClick={(e) => {setSelectedSubject(e.target.value)}}
+                >
+                    <optgroup label="Subjects">
                         { list.map((subject) => (
-                            <option key={subject} value={subject}>{subject}</option>
+                            <option 
+                                key={subject} 
+                                value={subject}
+                            >
+                                {subject}
+                            </option>
                         ))}
                     </optgroup>
                 </select>
-            </div>
-            <div>
-                <button onClick={() => onRemove()}>Remove</button>
+                <button 
+                    id="remove" 
+                    onClick={() => onRemove()}
+                >
+                    ❌
+                </button>
+                <button 
+                    id="left" 
+                    onClick={() => {
+                        if (currentDow === schedule.weekDays[0].dow) {
+                            setCurrentDow(schedule.weekDays[schedule.weekDays.length - 1].dow);
+                        }
+                        else {
+                            schedule.weekDays.forEach((day) => {
+                                if (day.dow === currentDow) {
+                                    setCurrentDow(schedule.weekDays[schedule.weekDays.indexOf(day) - 1].dow);
+                                }
+                            });
+                        }
+                }}>
+                    &lt;
+                </button>
+                <button 
+                    id="right" 
+                    onClick={() => {
+                        if (currentDow === schedule.weekDays[schedule.weekDays.length - 1].dow) {
+                            setCurrentDow(schedule.weekDays[0].dow);
+                        }
+                        else {
+                            schedule.weekDays.forEach((day) => {
+                                if (day.dow === currentDow) {
+                                    setCurrentDow(schedule.weekDays[schedule.weekDays.indexOf(day) + 1].dow);
+                                }
+                            });
+                        }
+                }}>
+                    &gt;
+                </button>
             </div>
             {schedule.weekDays.map((day) => {
-                return (
-                    <div className="overflow-x-auto">
-                        {day.dow}
-                        <div className="grid border-gray-600 w-full grid-flow-row grid-cols-[repeat(17,1fr)] grid-rows-[repeat(58,1fr)]">
-                            <div className="" key={0}>
-                                Times
+                if (day.dow !== currentDow) {
+                    return null;
+                }
+                else {
+                    return (
+                        <div className="overflow-x-auto">
+                            <div className="grid border-gray-600 w-full grid-flow-row grid-cols-[repeat(17,1fr)] grid-rows-[repeat(58,1fr)]">
+                                <div className="" key={0}>
+                                    <p id="weekDay" className="border-r border-b">{weekDays[currentDow]}</p>
+                                </div>
+                                {[...Array(16)].map((x, i) => (
+                                    <div id="week" className="border-r border-b" key={i + 1}>
+                                        Week {i + 1}
+                                    </div>
+                                ))}
+                                {generateTimeStrings().map((timeString, index) => (
+                                    <div
+                                        className="text-center border-r"
+                                        key={index}
+                                        style={{
+                                            gridRow: 2 + index,
+                                        }}
+                                    >
+                                        {timeString}
+                                    </div>
+                                ))}
+                                {day.rows.map((row) =>
+                                    createCards(row.weekCodes).map((code, key) => {
+                                        return (
+                                            <Card id="cards" onClick={() => {
+                                                onRemove();
+                                                }}
+                                                onMouseOver={() => {setSelectedSubject(row.subjectCode);}}
+                                                className="" style={{
+                                                    gridRowStart: 1 + timeToIndex(row.startTime),
+                                                    gridRowEnd: 1 + timeToIndex(row.endTime),
+                                                    gridColumnStart: 1 + code[0],
+                                                    gridColumnEnd: 2 + code[1],
+                                                }}
+                                            >
+                                                {key === 0 ? row.subjectName : ""}
+                                            </Card>
+                                        );
+                                    })
+                                )}
                             </div>
-                            {[...Array(16)].map((x, i) => (
-                                <div className="w-20" key={i + 1}>
-                                    Week {i + 1}
-                                </div>
-                            ))}
-                            {generateTimeStrings().map((timeString, index) => (
-                                <div
-                                    className=""
-                                    key={index}
-                                    style={{
-                                        gridRow: 2 + index,
-                                    }}
-                                >
-                                    {timeString}
-                                </div>
-                            ))}
-                            {day.rows.map((row) =>
-                                createCards(row.weekCodes).map((code, key) => {
-                                    return (
-                                        <Card
-                                            style={{
-                                                gridRowStart: 1 + timeToIndex(row.startTime),
-                                                gridRowEnd: 1 + timeToIndex(row.endTime),
-                                                gridColumnStart: 1 + code[0],
-                                                gridColumnEnd: 2 + code[1],
-                                            }}
-                                        >
-                                            {key === 0 ? row.subjectName : ""}
-                                        </Card>
-                                    );
-                                })
-                            )}
                         </div>
-                    </div>
-                );
-            })}
+                    );
+                }})}
         </>
     );
 }

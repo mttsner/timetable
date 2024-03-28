@@ -25,7 +25,7 @@ function removeStudentGroup(scheduleJson, studentGroupId) {
             ...weekDay,
             "rows": weekDay["rows"].filter(
                 (row) => {
-                    const sgs = row["sgs"].split(",").map((sg) => sg.trim());
+                    const sgs = row["sgs"] ? row["sgs"].split(",").map((sg) => sg.trim()) : [];
 
                     return !sgs.includes(studentGroupId);
                 }
