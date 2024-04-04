@@ -1,7 +1,9 @@
-import Schedule from "./schedule";
+"use client";
+
+import Header from "./header";
 
 export default function Home() {
   return (
-    <Schedule></Schedule>
+    <Header></Header>
   );
 }
