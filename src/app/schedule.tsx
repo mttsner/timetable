@@ -320,8 +320,8 @@ export default function Schedule() {
                                             return (
                                                 <Card id="cards"
                                                     className="" style={{
-                                                        gridRowStart: 2,
-                                                        gridRowEnd: 5 ,
+                                                        gridRowStart: "auto",
+                                                        gridRowEnd: "inherit",
                                                         gridColumnStart: 1 + code[0],
                                                         gridColumnEnd: 2 + code[1],
                                                     }}
