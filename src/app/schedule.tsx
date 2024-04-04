@@ -1,6 +1,5 @@
 "use client"
 
-// import { iacb } from "@/app/data";
 import { HTMLAttributes, useEffect, useState } from "react";
 import { search, searchSubject } from '@/lib/search';
 import { listPrograms, listSubjects, listSelected } from '@/lib/list';
@@ -25,6 +24,9 @@ function Card({ style, children, onClick, onMouseOver }: HTMLAttributes<HTMLDivE
 
 export default function Schedule() {
     const timeToIndex = (time: string) => {
+        if (time === null) {
+            return "";
+        }   
         let times = time.split(":");
         // Convert time to grid index
         // The grid is made up of 15 minute cells
@@ -100,6 +102,7 @@ export default function Schedule() {
         5: "Friday",
         6: "Saturday",
         7: "Sunday",
+        "-1": "Online",
     };
     const [ currentDow, setCurrentDow ] = useState(1);
 
@@ -313,11 +316,23 @@ export default function Schedule() {
                                 ))}
                                 {day.rows.map((row) =>
                                     createCards(row.weekCodes).map((code, key) => {
+                                        if (row.time === null) {
+                                            return (
+                                                <Card id="cards"
+                                                    className="" style={{
+                                                        gridRowStart: 2,
+                                                        gridRowEnd: 5 ,
+                                                        gridColumnStart: 1 + code[0],
+                                                        gridColumnEnd: 2 + code[1],
+                                                    }}
+                                                >
+                                                    {key === 0 ? row.subjectName : ""}
+                                                    <br></br>{key === 0 ? row.subjectCode : ""}
+                                                </Card>
+                                            );
+                                        }
                                         return (
-                                            <Card id="cards" onClick={() => {
-                                                onRemove();
-                                                }}
-                                                onMouseOver={() => {setSelectedSubject(row.subjectCode);}}
+                                            <Card id="cards"
                                                 className="" style={{
                                                     gridRowStart: 1 + timeToIndex(row.startTime),
                                                     gridRowEnd: 1 + timeToIndex(row.endTime),
@@ -326,6 +341,8 @@ export default function Schedule() {
                                                 }}
                                             >
                                                 {key === 0 ? row.subjectName : ""}
+                                                <br></br>{key === 0 ? row.subjectCode : ""}
+                                                <br></br>{key === 0 ? row.time : ""}
                                             </Card>
                                         );
                                     })
