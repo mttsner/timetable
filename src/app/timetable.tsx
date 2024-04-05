@@ -2,18 +2,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Schedule from "./schedule";
 
 enum WeekDays {
-    Monday,
+    Monday = 1,
     Tuesday,
     Wednesday,
     Thursday,
     Friday,
     Saturday,
     Sunday,
-    Online = -1
-
+    Online = -1,
 }
 
 export default function Timetable({ schedule }) {
+    console.log(schedule);
     return (
         <Tabs defaultValue="monday" className="w-full">
             <TabsList className="grid w-full grid-cols-8">
@@ -27,28 +27,60 @@ export default function Timetable({ schedule }) {
                 <TabsTrigger value="online">Distants</TabsTrigger>
             </TabsList>
             <TabsContent value="monday">
-                <Schedule day={schedule.weekDays[WeekDays.Monday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Monday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="tuesday">
-                <Schedule day={schedule.weekDays[WeekDays.Tuesday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Tuesday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="wednesday">
-                <Schedule day={schedule.weekDays[WeekDays.Wednesday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Wednesday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="thursday">
-                <Schedule day={schedule.weekDays[WeekDays.Thursday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Thursday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="friday">
-                <Schedule day={schedule.weekDays[WeekDays.Friday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Friday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="saturday">
-                <Schedule day={schedule.weekDays[WeekDays.Saturday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Saturday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="sunday">
-                <Schedule day={schedule.weekDays[WeekDays.Saturday]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Sunday
+                    )}
+                />
             </TabsContent>
             <TabsContent value="online">
-                <Schedule day={schedule.weekDays[WeekDays.Online]}/>
+                <Schedule
+                    day={schedule.weekDays.find(
+                        (day) => day.dow == WeekDays.Online
+                    )}
+                />
             </TabsContent>
         </Tabs>
     );
