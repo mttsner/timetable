@@ -1,13 +1,5 @@
 /*#342b60*/
 
-button {
-  border-radius: 10px;
-  padding-left: 4px;
-  padding-right: 4px;
-  background-color: #dadae4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 input {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
