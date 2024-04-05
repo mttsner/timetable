@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Schedule from "./schedule";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 enum WeekDays {
     Monday = 1,
@@ -12,10 +13,19 @@ enum WeekDays {
     Online = -1,
 }
 
-export default function Timetable({ schedule }) {
-    console.log(schedule);
+function ScheduleTab({ day }) {
     return (
-        <Tabs defaultValue="monday" className="w-full">
+        <ScrollArea className="h-full">
+            <Schedule day={day} />
+            <ScrollBar orientation="vertical"></ScrollBar>
+            <ScrollBar orientation="horizontal"></ScrollBar>
+        </ScrollArea>
+    );
+}
+
+export default function Timetable({ schedule }) {
+    return (
+        <Tabs defaultValue="monday" className="h-full w-full flex flex-col ">
             <TabsList className="grid w-full grid-cols-8">
                 <TabsTrigger value="monday">Esmaspäev</TabsTrigger>
                 <TabsTrigger value="tuesday">Teisipäev</TabsTrigger>
@@ -26,57 +36,57 @@ export default function Timetable({ schedule }) {
                 <TabsTrigger value="sunday">Pühapäev</TabsTrigger>
                 <TabsTrigger value="online">Distants</TabsTrigger>
             </TabsList>
-            <TabsContent value="monday">
-                <Schedule
+            <TabsContent value="monday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Monday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="tuesday">
-                <Schedule
+            <TabsContent value="tuesday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Tuesday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="wednesday">
-                <Schedule
+            <TabsContent value="wednesday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Wednesday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="thursday">
-                <Schedule
+            <TabsContent value="thursday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Thursday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="friday">
-                <Schedule
+            <TabsContent value="friday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Friday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="saturday">
-                <Schedule
+            <TabsContent value="saturday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Saturday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="sunday">
-                <Schedule
+            <TabsContent value="sunday" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Sunday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="online">
-                <Schedule
+            <TabsContent value="online" className="flex-1 overflow-hidden">
+                <ScheduleTab
                     day={schedule.weekDays.find(
                         (day) => day.dow == WeekDays.Online
                     )}

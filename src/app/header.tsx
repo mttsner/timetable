@@ -12,6 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import Timetable from "./timetable";
 import Search from "./search";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import Overview from "./overview";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -106,46 +108,24 @@ export default function Header() {
         }
     }
 
-    async function onRemove() {
-        console.log(selectedSubject);
-        setSchedule(removeSubject(schedule, selectedSubject));
+    async function onRemove(code: String) {
+        setSchedule(removeSubject(schedule, code));
     }
-
     return (
-        <>
-            <title>TalTech Scheduler</title>
-            <div id="searchBar">
-                <div className="search-dropdown">
+        <div className="h-screen w-screen">
+            <div className="h-full w-full flex">
+                <div className="p-4">
                     <Search
                         programs={resultProgram}
                         subjects={resultSubject}
                         onSubmit={onAdd}
                     ></Search>
+                    <Overview list={list} submit={onRemove}></Overview>
                 </div>
-                <button id="export" onClick={() => console.log(schedule)}>
-                    Export
-                </button>
+                <div className="flex-1 overflow-hidden">
+                        <Timetable schedule={schedule}></Timetable>
+                </div>
             </div>
-            <div id="removeBar">
-                <select
-                    id="subjects"
-                    onClick={(e) => {
-                        setSelectedSubject(e.target.value);
-                    }}
-                >
-                    <optgroup label="Subjects">
-                        {list.map((subject) => (
-                            <option key={subject} value={subject}>
-                                {subject}
-                            </option>
-                        ))}
-                    </optgroup>
-                </select>
-                <button id="remove" onClick={() => onRemove()}>
-                    ❌
-                </button>
-            </div>
-            <Timetable schedule={schedule}></Timetable>
-        </>
+        </div>
     );
 }
