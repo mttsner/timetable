@@ -136,7 +136,7 @@ export default function Header() {
                     ></input>
                     <select
                         id="select"
-                        onClick={(e) => {
+                        onSelect={(e) => {
                             if (e.target.id.startsWith("P_")) {
                                 setSelectedStudentGroup(e.target.value);
                                 setSelectedId(1);
