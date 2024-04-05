@@ -1,9 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -19,35 +16,12 @@ import {
 } from "@/components/ui/popover";
 import { CommandList } from "cmdk";
 
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-];
-
 enum Groups {
     Subject,
     Program,
 }
 
-export default function Search({programs, subjects, onSubmit}) {
+export default function Search({ programs, subjects, onSubmit }) {
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -64,7 +38,7 @@ export default function Search({programs, subjects, onSubmit}) {
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput placeholder="Otsi õppekava/aine..."/>
+                    <CommandInput placeholder="Otsi õppekava/aine..." />
                     <CommandList>
                         <CommandEmpty>Pole õppekava/aine</CommandEmpty>
                         <CommandGroup heading="Programs">
@@ -74,8 +48,8 @@ export default function Search({programs, subjects, onSubmit}) {
                                     key={program}
                                     value={program}
                                     onSelect={(value) => {
-                                        onSubmit(Groups.Program, value)
-                                        setOpen(false)
+                                        onSubmit(Groups.Program, value);
+                                        setOpen(false);
                                     }}
                                 >
                                     {program}
@@ -89,8 +63,8 @@ export default function Search({programs, subjects, onSubmit}) {
                                     key={subject}
                                     value={subject}
                                     onSelect={(value) => {
-                                        onSubmit(Groups.Subject, value)
-                                        setOpen(false)
+                                        onSubmit(Groups.Subject, value);
+                                        setOpen(false);
                                     }}
                                 >
                                     {subject}
