@@ -10,7 +10,7 @@ import {
     removeSubject,
 } from "@/taltech_api/timetable_editor";
 import { useEffect, useState } from "react";
-import Schedule from "./schedule";
+import Timetable from "./timetable";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -242,7 +242,7 @@ export default function Header() {
                     &gt;
                 </button>
             </div>
-            <Schedule schedule={schedule} currentDow={currentDow}></Schedule>
+            <Timetable schedule={schedule}></Timetable>
         </>
     );
 }
