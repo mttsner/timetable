@@ -104,7 +104,7 @@ export default function Schedule({ day }) {
                     className="border-r border-b min-w-20"
                     key={i + 1}
                 >
-                    Week {i + 1}
+                    Nädal {i + 1}
                 </div>
             ))}
             {generateTimeStrings().map((timeString, index) => (

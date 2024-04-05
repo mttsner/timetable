@@ -24,7 +24,7 @@ export default function Overview({ list, submit }) {
                             <TableCell>{code}</TableCell>
                             <TableCell>
                                 <Button onClick={() => submit(code)}>
-                                    Delete
+                                    Kustuta
                                 </Button>
                             </TableCell>
                         </TableRow>
