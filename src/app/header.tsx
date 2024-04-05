@@ -11,6 +11,7 @@ import {
 } from "@/taltech_api/timetable_editor";
 import { useEffect, useState } from "react";
 import Timetable from "./timetable";
+import Search from "./search";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -83,33 +84,23 @@ export default function Header() {
     }, [schedule]);
 
     // Function for adding a layer on the schedule
-    async function onAdd(type: number) {
+    async function onAdd(type: number, value: string) {
         if (type) {
             if (currentGroup === "") {
-                setSchedule(
-                    await search(timetableId, departments, selectedStudentGroup)
-                );
-                setCurrentGroup(selectedStudentGroup);
+                setSchedule(await search(timetableId, departments, value));
+                setCurrentGroup(value);
             } else {
                 setSchedule(
                     combineSchedules(
-                        await search(
-                            timetableId,
-                            departments,
-                            selectedStudentGroup
-                        ),
+                        await search(timetableId, departments, value),
                         removeStudentGroup(schedule, currentGroup)
                     )
                 );
-                setCurrentGroup(selectedStudentGroup);
+                setCurrentGroup(value);
                 // setSchedule(combineSchedules(schedule, await search(timetableId, departments, selectedStudentGroup)));
             }
         } else {
-            const subject = await searchSubject(
-                timetableId,
-                subjects,
-                selectedSubject
-            );
+            const subject = await searchSubject(timetableId, subjects, value);
             const newSchedule = combineSchedules(schedule, subject);
             setSchedule(newSchedule);
         }
@@ -125,54 +116,12 @@ export default function Header() {
             <title>TalTech Scheduler</title>
             <div id="searchBar">
                 <div className="search-dropdown">
-                    <input
-                        id="search"
-                        list="Programmes"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        type="text"
-                        placeholder="Enter a subject/program"
-                        autoComplete="off"
-                    ></input>
-                    <select
-                        id="select"
-                        onSelect={(e) => {
-                            if (e.target.id.startsWith("P_")) {
-                                setSelectedStudentGroup(e.target.value);
-                                setSelectedId(1);
-                            } else {
-                                setSelectedSubject(e.target.value);
-                                setSelectedId(0);
-                            }
-                        }}
-                    >
-                        <optgroup label="Study Plans">
-                            {resultProgram.map((program) => (
-                                <option
-                                    id={"P_" + program}
-                                    key={program}
-                                    value={program}
-                                >
-                                    {program}
-                                </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="Single Subjects">
-                            {resultSubject.map((subject) => (
-                                <option
-                                    id={"S_" + subject}
-                                    key={subject}
-                                    value={subject}
-                                >
-                                    {subject}
-                                </option>
-                            ))}
-                        </optgroup>
-                    </select>
+                    <Search
+                        programs={resultProgram}
+                        subjects={resultSubject}
+                        onSubmit={onAdd}
+                    ></Search>
                 </div>
-                <button id="add" onClick={() => onAdd(selectedId)}>
-                    🔎
-                </button>
                 <button id="export" onClick={() => console.log(schedule)}>
                     Export
                 </button>
@@ -194,52 +143,6 @@ export default function Header() {
                 </select>
                 <button id="remove" onClick={() => onRemove()}>
                     ❌
-                </button>
-                <button
-                    id="left"
-                    onClick={() => {
-                        if (currentDow === schedule.weekDays[0].dow) {
-                            setCurrentDow(
-                                schedule.weekDays[schedule.weekDays.length - 1]
-                                    .dow
-                            );
-                        } else {
-                            schedule.weekDays.forEach((day) => {
-                                if (day.dow === currentDow) {
-                                    setCurrentDow(
-                                        schedule.weekDays[
-                                            schedule.weekDays.indexOf(day) - 1
-                                        ].dow
-                                    );
-                                }
-                            });
-                        }
-                    }}
-                >
-                    &lt;
-                </button>
-                <button
-                    id="right"
-                    onClick={() => {
-                        if (
-                            currentDow ===
-                            schedule.weekDays[schedule.weekDays.length - 1].dow
-                        ) {
-                            setCurrentDow(schedule.weekDays[0].dow);
-                        } else {
-                            schedule.weekDays.forEach((day) => {
-                                if (day.dow === currentDow) {
-                                    setCurrentDow(
-                                        schedule.weekDays[
-                                            schedule.weekDays.indexOf(day) + 1
-                                        ].dow
-                                    );
-                                }
-                            });
-                        }
-                    }}
-                >
-                    &gt;
                 </button>
             </div>
             <Timetable schedule={schedule}></Timetable>

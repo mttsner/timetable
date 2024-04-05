@@ -1,14 +1,5 @@
 /*#342b60*/
 
-input {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  padding-left: 4px;
-  padding-right: 4px;
-  width: 228px;
-  background-color: #dadae4;
-}
-
 #subjects {
   height: 26px;
   left: 15px;
@@ -62,20 +53,6 @@ input {
   background-image: linear-gradient(#aa1352, #e4067e);
 }
 
-#select {
-  display: flex;
-  height: 24px;
-  left: 15px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  padding-left: 4px;
-  padding-right: 4px;
-  background-color: #dadae4;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 228px;
-  column-count: 3;
-  column-gap: 10px;
-}
 
 #remove {
   font-size: large;
