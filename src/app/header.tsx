@@ -83,7 +83,7 @@ export default function Header() {
     }, [schedule]);
 
     // Function for adding a layer on the schedule
-    async function onAdd(type) {
+    async function onAdd(type: number) {
         if (type) {
             if (currentGroup === "") {
                 setSchedule(
