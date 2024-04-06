@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { Trash2 } from "lucide-react";
 
 export default function Overview({ list, submit }) {
     return (
@@ -23,8 +24,8 @@ export default function Overview({ list, submit }) {
                         <TableRow>
                             <TableCell>{code}</TableCell>
                             <TableCell>
-                                <Button onClick={() => submit(code)}>
-                                    Kustuta
+                                <Button variant="ghost" size="icon" onClick={() => submit(code)}>
+                                    <Trash2 className="w-5 h-5"/>
                                 </Button>
                             </TableCell>
                         </TableRow>
