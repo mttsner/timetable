@@ -14,6 +14,7 @@ import Timetable from "./timetable";
 import Search from "./search";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Overview from "./overview";
+import Logo from "@/components/logo";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -114,16 +115,19 @@ export default function Header() {
     return (
         <div className="h-screen w-screen">
             <div className="h-full w-full flex">
-                <div className="p-4">
-                    <Search
-                        programs={resultProgram}
-                        subjects={resultSubject}
-                        onSubmit={onAdd}
-                    ></Search>
+                <div className="px-2">
+                    <img src={"./logo.svg"} className="w-full my-2" alt="" />
+                    <div className="my-2">
+                        <Search
+                            programs={resultProgram}
+                            subjects={resultSubject}
+                            onSubmit={onAdd}
+                        ></Search>
+                    </div>
                     <Overview list={list} submit={onRemove}></Overview>
                 </div>
                 <div className="flex-1 overflow-hidden">
-                        <Timetable schedule={schedule}></Timetable>
+                    <Timetable schedule={schedule}></Timetable>
                 </div>
             </div>
         </div>
