@@ -1,15 +1,14 @@
-"use client"
+"use client";
 
-import { HTMLAttributes, useEffect, useState } from "react";
-import { search, searchSubject } from '@/lib/search';
-import { listPrograms, listSubjects, listSelected } from '@/lib/list';
-import { getDepartments } from "@/taltech_api/get_departments";
-import { getTimetables } from "@/taltech_api/get_timetables";
-import { getCourses } from "@/taltech_api/get_courses";
-import { combineSchedules, removeStudentGroup, removeSubject } from "@/taltech_api/timetable_editor";
+import { HTMLAttributes } from "react";
 import "@/app/page.css";
 
-function Card({ style, children, onClick, onMouseOver }: HTMLAttributes<HTMLDivElement>) {
+function Card({
+    style,
+    children,
+    onClick,
+    onMouseOver,
+}: HTMLAttributes<HTMLDivElement>) {
     return (
         <div
             style={style}
@@ -22,14 +21,14 @@ function Card({ style, children, onClick, onMouseOver }: HTMLAttributes<HTMLDivE
     );
 }
 
-export default function Schedule({schedule, currentDow}) {
-    if (schedule == undefined) {
-        return <></>
+export default function Schedule({ day }) {
+    if (day == undefined) {
+        return null;
     }
     const timeToIndex = (time: string) => {
         if (time === null) {
             return "";
-        }   
+        }
         let times = time.split(":");
         // Convert time to grid index
         // The grid is made up of 15 minute cells
@@ -95,73 +94,70 @@ export default function Schedule({schedule, currentDow}) {
         7: "Sunday",
         "-1": "Online",
     };
-    
+
     return (
-        <>
-            {schedule.weekDays.map((day) => {
-                if (day.dow !== currentDow) {
-                    return null;
-                }
-                else {
+        <div className="grid border-gray-600 grid-flow-row grid-cols-[repeat(17,1fr)] grid-rows-[repeat(58,1fr)]">
+            <div id="week" key={0} className="border-r border-b"></div>
+            {[...Array(16)].map((x, i) => (
+                <div
+                    id="week"
+                    className="border-r border-b min-w-20"
+                    key={i + 1}
+                >
+                    Nädal {i + 1}
+                </div>
+            ))}
+            {generateTimeStrings().map((timeString, index) => (
+                <div
+                    className="text-center border-r"
+                    key={index}
+                    style={{
+                        gridRow: 2 + index,
+                    }}
+                >
+                    {timeString}
+                </div>
+            ))}
+            {day.rows.map((row) =>
+                createCards(row.weekCodes).map((code, key) => {
+                    if (row.time === null) {
+                        return (
+                            <Card
+                                id="cards"
+                                className=""
+                                style={{
+                                    gridRowStart: 2,
+                                    gridRowEnd: 5,
+                                    gridColumnStart: 1 + code[0],
+                                    gridColumnEnd: 2 + code[1],
+                                }}
+                            >
+                                {key === 0 ? row.subjectName : ""}
+                                <br></br>
+                                {key === 0 ? row.subjectCode : ""}
+                            </Card>
+                        );
+                    }
                     return (
-                        <div className="overflow-x-auto">
-                            <div className="grid border-gray-600 w-full grid-flow-row grid-cols-[repeat(17,1fr)] grid-rows-[repeat(58,1fr)]">
-                                <div className="" key={0}>
-                                    <p id="weekDay" className="border-r border-b">{weekDays[currentDow]}</p>
-                                </div>
-                                {[...Array(16)].map((x, i) => (
-                                    <div id="week" className="border-r border-b" key={i + 1}>
-                                        Week {i + 1}
-                                    </div>
-                                ))}
-                                {generateTimeStrings().map((timeString, index) => (
-                                    <div
-                                        className="text-center border-r"
-                                        key={index}
-                                        style={{
-                                            gridRow: 2 + index,
-                                        }}
-                                    >
-                                        {timeString}
-                                    </div>
-                                ))}
-                                {day.rows.map((row) =>
-                                    createCards(row.weekCodes).map((code, key) => {
-                                        if (row.time === null) {
-                                            return (
-                                                <Card id="cards"
-                                                    className="" style={{
-                                                        gridRowStart: "auto",
-                                                        gridRowEnd: "inherit",
-                                                        gridColumnStart: 1 + code[0],
-                                                        gridColumnEnd: 2 + code[1],
-                                                    }}
-                                                >
-                                                    {key === 0 ? row.subjectName : ""}
-                                                    <br></br>{key === 0 ? row.subjectCode : ""}
-                                                </Card>
-                                            );
-                                        }
-                                        return (
-                                            <Card id="cards"
-                                                className="" style={{
-                                                    gridRowStart: 1 + timeToIndex(row.startTime),
-                                                    gridRowEnd: 1 + timeToIndex(row.endTime),
-                                                    gridColumnStart: 1 + code[0],
-                                                    gridColumnEnd: 2 + code[1],
-                                                }}
-                                            >
-                                                {key === 0 ? row.subjectName : ""}
-                                                <br></br>{key === 0 ? row.subjectCode : ""}
-                                                <br></br>{key === 0 ? row.time : ""}
-                                            </Card>
-                                        );
-                                    })
-                                )}
-                            </div>
-                        </div>
+                        <Card
+                            id="cards"
+                            className=""
+                            style={{
+                                gridRowStart: 1 + timeToIndex(row.startTime),
+                                gridRowEnd: 1 + timeToIndex(row.endTime),
+                                gridColumnStart: 1 + code[0],
+                                gridColumnEnd: 2 + code[1],
+                            }}
+                        >
+                            {key === 0 ? row.subjectName : ""}
+                            <br></br>
+                            {key === 0 ? row.subjectCode : ""}
+                            <br></br>
+                            {key === 0 ? row.time : ""}
+                        </Card>
                     );
-                }})}
-        </>
+                })
+            )}
+        </div>
     );
 }

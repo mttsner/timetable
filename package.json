@@ -11,6 +11,10 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-popover": "^1.0.7",
+<<<<<<< HEAD
+=======
+    "@radix-ui/react-scroll-area": "^1.0.5",
+>>>>>>> 35541d1708f281db7821c24bc5cccd4d66e977d2
     "@radix-ui/react-tabs": "^1.0.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

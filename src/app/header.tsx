@@ -10,7 +10,11 @@ import {
     removeSubject,
 } from "@/taltech_api/timetable_editor";
 import { useEffect, useState } from "react";
-import Schedule from "./schedule";
+import Timetable from "./timetable";
+import Search from "./search";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import Overview from "./overview";
+import Logo from "@/components/logo";
 
 export default function Header() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -83,6 +87,7 @@ export default function Header() {
     }, [schedule]);
 
     // Function for adding a layer on the schedule
+<<<<<<< HEAD
     async function onAdd(type: number) {
     if (type) {
         if (currentGroup === "") {
@@ -90,37 +95,35 @@ export default function Header() {
                     await search(timetableId, departments, selectedStudentGroup)
                 );
                 setCurrentGroup(selectedStudentGroup);
+=======
+    async function onAdd(type: number, value: string) {
+        if (type) {
+            if (currentGroup === "") {
+                setSchedule(await search(timetableId, departments, value));
+                setCurrentGroup(value);
+>>>>>>> 35541d1708f281db7821c24bc5cccd4d66e977d2
             } else {
                 setSchedule(
                     combineSchedules(
-                        await search(
-                            timetableId,
-                            departments,
-                            selectedStudentGroup
-                        ),
+                        await search(timetableId, departments, value),
                         removeStudentGroup(schedule, currentGroup)
                     )
                 );
-                setCurrentGroup(selectedStudentGroup);
+                setCurrentGroup(value);
                 // setSchedule(combineSchedules(schedule, await search(timetableId, departments, selectedStudentGroup)));
             }
         } else {
-            const subject = await searchSubject(
-                timetableId,
-                subjects,
-                selectedSubject
-            );
+            const subject = await searchSubject(timetableId, subjects, value);
             const newSchedule = combineSchedules(schedule, subject);
             setSchedule(newSchedule);
         }
     }
 
-    async function onRemove() {
-        console.log(selectedSubject);
-        setSchedule(removeSubject(schedule, selectedSubject));
+    async function onRemove(code: String) {
+        setSchedule(removeSubject(schedule, code));
     }
-
     return (
+<<<<<<< HEAD
         <>
             <title>TalTech Scheduler</title>
             <div id="searchBar">
@@ -169,80 +172,25 @@ export default function Header() {
                             ))}
                         </optgroup>
                     </select>
+=======
+        <div className="h-screen w-screen">
+            <div className="h-full w-full flex">
+                <div className="px-2">
+                    <img src={"./logo.svg"} className="w-full my-2" alt="" />
+                    <div className="my-2">
+                        <Search
+                            programs={resultProgram}
+                            subjects={resultSubject}
+                            onSubmit={onAdd}
+                        ></Search>
+                    </div>
+                    <Overview list={list} submit={onRemove}></Overview>
                 </div>
-                <button id="add" onClick={() => onAdd(selectedId)}>
-                    🔎
-                </button>
-                <button id="export" onClick={() => console.log(schedule)}>
-                    Export
-                </button>
+                <div className="flex-1 overflow-hidden">
+                    <Timetable schedule={schedule}></Timetable>
+>>>>>>> 35541d1708f281db7821c24bc5cccd4d66e977d2
+                </div>
             </div>
-            <div id="removeBar">
-                <select
-                    id="subjects"
-                    onClick={(e) => {
-                        setSelectedSubject(e.target.value);
-                    }}
-                >
-                    <optgroup label="Subjects">
-                        {list.map((subject) => (
-                            <option key={subject} value={subject}>
-                                {subject}
-                            </option>
-                        ))}
-                    </optgroup>
-                </select>
-                <button id="remove" onClick={() => onRemove()}>
-                    ❌
-                </button>
-                <button
-                    id="left"
-                    onClick={() => {
-                        if (currentDow === schedule.weekDays[0].dow) {
-                            setCurrentDow(
-                                schedule.weekDays[schedule.weekDays.length - 1]
-                                    .dow
-                            );
-                        } else {
-                            schedule.weekDays.forEach((day) => {
-                                if (day.dow === currentDow) {
-                                    setCurrentDow(
-                                        schedule.weekDays[
-                                            schedule.weekDays.indexOf(day) - 1
-                                        ].dow
-                                    );
-                                }
-                            });
-                        }
-                    }}
-                >
-                    &lt;
-                </button>
-                <button
-                    id="right"
-                    onClick={() => {
-                        if (
-                            currentDow ===
-                            schedule.weekDays[schedule.weekDays.length - 1].dow
-                        ) {
-                            setCurrentDow(schedule.weekDays[0].dow);
-                        } else {
-                            schedule.weekDays.forEach((day) => {
-                                if (day.dow === currentDow) {
-                                    setCurrentDow(
-                                        schedule.weekDays[
-                                            schedule.weekDays.indexOf(day) + 1
-                                        ].dow
-                                    );
-                                }
-                            });
-                        }
-                    }}
-                >
-                    &gt;
-                </button>
-            </div>
-            <Schedule schedule={schedule} currentDow={currentDow}></Schedule>
-        </>
+        </div>
     );
 }
