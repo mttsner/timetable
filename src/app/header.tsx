@@ -87,21 +87,11 @@ export default function Header() {
     }, [schedule]);
 
     // Function for adding a layer on the schedule
-<<<<<<< HEAD
-    async function onAdd(type: number) {
-    if (type) {
-        if (currentGroup === "") {
-                setSchedule(
-                    await search(timetableId, departments, selectedStudentGroup)
-                );
-                setCurrentGroup(selectedStudentGroup);
-=======
     async function onAdd(type: number, value: string) {
         if (type) {
             if (currentGroup === "") {
                 setSchedule(await search(timetableId, departments, value));
                 setCurrentGroup(value);
->>>>>>> 35541d1708f281db7821c24bc5cccd4d66e977d2
             } else {
                 setSchedule(
                     combineSchedules(
@@ -123,56 +113,6 @@ export default function Header() {
         setSchedule(removeSubject(schedule, code));
     }
     return (
-<<<<<<< HEAD
-        <>
-            <title>TalTech Scheduler</title>
-            <div id="searchBar">
-                <div className="search-dropdown">
-                    <input
-                        id="search"
-                        list="Programmes"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        type="text"
-                        placeholder="Enter a subject/program"
-                        autoComplete="off"
-                    ></input>
-                    <select
-                        id="select"
-                        onClick={(e) => {
-                            if (e.target.id.startsWith("P_")) {
-                                setSelectedStudentGroup(e.target.value);
-                                setSelectedId(1);
-                            } else {
-                                setSelectedSubject(e.target.value);
-                                setSelectedId(0);
-                            }
-                        }}
-                    >
-                        <optgroup label="Study Plans">
-                            {resultProgram.map((program) => (
-                                <option
-                                    id={"P_" + program}
-                                    key={program}
-                                    value={program}
-                                >
-                                    {program}
-                                </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="Single Subjects">
-                            {resultSubject.map((subject) => (
-                                <option
-                                    id={"S_" + subject}
-                                    key={subject}
-                                    value={subject}
-                                >
-                                    {subject}
-                                </option>
-                            ))}
-                        </optgroup>
-                    </select>
-=======
         <div className="h-screen w-screen">
             <div className="h-full w-full flex">
                 <div className="px-2">
@@ -188,7 +128,6 @@ export default function Header() {
                 </div>
                 <div className="flex-1 overflow-hidden">
                     <Timetable schedule={schedule}></Timetable>
->>>>>>> 35541d1708f281db7821c24bc5cccd4d66e977d2
                 </div>
             </div>
         </div>
