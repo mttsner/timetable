@@ -84,8 +84,8 @@ export default function Header() {
 
     // Function for adding a layer on the schedule
     async function onAdd(type: number) {
-        if (type) {
-            if (currentGroup === "") {
+    if (type) {
+        if (currentGroup === "") {
                 setSchedule(
                     await search(timetableId, departments, selectedStudentGroup)
                 );
@@ -136,7 +136,7 @@ export default function Header() {
                     ></input>
                     <select
                         id="select"
-                        onSelect={(e) => {
+                        onClick={(e) => {
                             if (e.target.id.startsWith("P_")) {
                                 setSelectedStudentGroup(e.target.value);
                                 setSelectedId(1);
