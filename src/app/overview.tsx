@@ -21,7 +21,7 @@ export default function Overview({ list, submit }) {
                 </TableHeader>
                 <TableBody>
                     {list.map((code) => (
-                        <TableRow>
+                        <TableRow key={code}>
                             <TableCell>{code}</TableCell>
                             <TableCell>
                                 <Button variant="ghost" size="icon" onClick={() => submit(code)}>
