@@ -2,6 +2,11 @@
 
 import { HTMLAttributes } from "react";
 import "@/app/page.css";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 function Card({
     style,
@@ -10,14 +15,15 @@ function Card({
     onMouseOver,
 }: HTMLAttributes<HTMLDivElement>) {
     return (
-        <div
-            style={style}
-            className="rounded-xl bg-red-400 grid text-ellipsis overflow-hidden text-nowrap p-1 m-0.5"
-            onClick={onClick}
-            onMouseOver={onMouseOver}
-        >
-            {children}
-        </div>
+        <HoverCard openDelay={300}>
+            <HoverCardTrigger
+                style={style}
+                className="bg-red-400 grid text-ellipsis overflow-hidden text-nowrap hover:text-base hover:brightness-110 transition-all"
+            ></HoverCardTrigger>
+            <HoverCardContent side="right" align="start">
+                {children}
+            </HoverCardContent>
+        </HoverCard>
     );
 }
 
