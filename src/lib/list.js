@@ -1,6 +1,4 @@
-"use server"
-
-export async function listSubjects(subjects, chosenSubjectCode) {
+export function listSubjects(subjects, chosenSubjectCode) {
 
     let foundSubjects = [];
 
@@ -13,11 +11,15 @@ export async function listSubjects(subjects, chosenSubjectCode) {
 }
 
 
-export async function listSelected(schedule) {
+export function listSelected(schedule) {
 
     let foundSubjects = [];
 
-    schedule["weekDays"].forEach(weekDay => {
+    if (!schedule || !schedule["weekDays"]) {
+        return []
+    }
+
+    schedule.weekDays.forEach(weekDay => {
         weekDay.rows.forEach(row => {
             if (foundSubjects.includes(row["subjectCode"]) === false) {
                 foundSubjects.push(row["subjectCode"]);
@@ -28,7 +30,7 @@ export async function listSelected(schedule) {
 }
 
 
-export async function listPrograms(departments, chosenCurriculumCode) {
+export function listPrograms(departments, chosenCurriculumCode) {
     
     let curriculums = [];
 
