@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Schedule from "./schedule";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useTimetableStore } from "./page";
 
 enum WeekDays {
     Monday = 1,
@@ -23,7 +24,12 @@ function ScheduleTab({ day }) {
     );
 }
 
-export default function Timetable({ schedule }) {
+export default function Timetable() {
+    // Global timetable state
+    const schedule = useTimetableStore(
+        (state) => state.timetables[state.currentTimetableId]
+    );
+    
     return (
         <Tabs defaultValue="monday" className="h-full w-full flex flex-col ">
             <TabsList className="grid w-full grid-cols-8">

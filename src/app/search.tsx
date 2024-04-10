@@ -1,6 +1,4 @@
 "use client";
-
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
     Command,
@@ -15,14 +13,55 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { CommandList } from "cmdk";
+import { useEffect, useState } from "react";
+import { getDepartments } from "@/taltech_api/get_departments";
+import { getCourses } from "@/taltech_api/get_courses";
+import { useTimetableStore } from "./page";
+import { search, searchSubject } from "@/lib/search";
 
-enum Groups {
-    Subject,
-    Program,
-}
-
-export default function Search({ programs, subjects, onSubmit }) {
-    const [open, setOpen] = React.useState(false);
+export default function Search() {
+    // Global timetable state
+    const timetableId = useTimetableStore((state) => state.currentTimetableId);
+    const addSubject = useTimetableStore((state) => state.addSubject);
+    // Local search component state
+    const [programs, setPrograms] = useState<string[]>([]);
+    const [subjects, setSubjects] = useState<string[]>([]);
+    const [departments, setDepartments] = useState([]);
+    const [courses, setCourses] = useState([]);
+    const [open, setOpen] = useState(false);
+    // Update programs and subjects when timetable id changes
+    useEffect(() => {
+        (async () => {
+            // Get courses
+            const courses = await getCourses(timetableId);
+            setCourses(courses);
+            // Extract subject codes from courses
+            setSubjects(courses.map((course: any) => course.code));
+            // Get deparments
+            const departments = await getDepartments(timetableId);
+            setDepartments(departments);
+            // Extrat program codes from departments
+            setPrograms(
+                departments.flatMap((department: any) =>
+                    department.curriculums.flatMap((curriculum: any) =>
+                        curriculum.studentGroups.map(
+                            (studentGroup: any) => studentGroup.code
+                        )
+                    )
+                )
+            );
+        })();
+    }, [timetableId]);
+    // Add subjects from a program to the current schedule
+    const onProgramSelect = async (code: string) => {
+        const subject = await search(timetableId, departments, code);
+        addSubject(subject);
+    };
+    // Add subject to the current schedule
+    const onSubjectSelect = async (code: string) => {
+        const subject = await searchSubject(timetableId, courses, code);
+        addSubject(subject);
+    };
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -48,7 +87,7 @@ export default function Search({ programs, subjects, onSubmit }) {
                                     key={program}
                                     value={program}
                                     onSelect={(value) => {
-                                        onSubmit(Groups.Program, value);
+                                        onProgramSelect(value);
                                         setOpen(false);
                                     }}
                                 >
@@ -63,7 +102,7 @@ export default function Search({ programs, subjects, onSubmit }) {
                                     key={subject}
                                     value={subject}
                                     onSelect={(value) => {
-                                        onSubmit(Groups.Subject, value);
+                                        onSubjectSelect(value);
                                         setOpen(false);
                                     }}
                                 >
