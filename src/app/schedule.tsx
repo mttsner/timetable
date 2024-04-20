@@ -1,6 +1,5 @@
 "use client";
 
-import "@/app/page.css";
 import {
     HoverCard,
     HoverCardContent,
