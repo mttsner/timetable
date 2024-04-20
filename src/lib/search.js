@@ -1,6 +1,4 @@
-"use server"
-
-const { getProgram } = require('../taltech_api/get_program');
+import { getProgram } from "@/taltech_api/get_program";
 import { getSubject } from "@/taltech_api/get_subject";
 
 

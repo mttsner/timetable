@@ -1,8 +1,6 @@
-import ical, {ICalCalendar, ICalCalendarMethod} from 'ical-generator';
+import ical, { ICalCalendar, ICalCalendarMethod } from "ical-generator";
 
-
-
-function dateDiffInDays(first, second) {        
+function dateDiffInDays(first, second) {
     return Math.round((second - first) / (1000 * 60 * 60 * 24));
 }
 
@@ -16,26 +14,32 @@ function findRepeatance(dateArray) {
 
     // Try to check repeatances in steps of 7 (1 week)
     // 'repeatance < 7 * 16' is just to avoid infinite loop
-    for(let repeatance = 7; repeatance < 7 * 16; repeatance += 7) {
+    for (let repeatance = 7; repeatance < 7 * 16; repeatance += 7) {
         let found = true;
-        
+
         // Check distance between date pairs sequentially
-        for(let i = 0; i < dateArray.length - repeatance; i++) {
-            if(dateDiffInDays(dateArray[i], dateArray[i + repeatance]) !== repeatance) {
+        for (let i = 0; i < dateArray.length - repeatance; i++) {
+            if (
+                dateDiffInDays(dateArray[i], dateArray[i + repeatance]) !==
+                repeatance
+            ) {
                 found = false;
                 break;
             }
 
             // If the repetance is larger than the distance between
             // the two dates, return 'null'
-            if(dateDiffInDays(dateArray[i], dateArray[i + repeatance]) > repeatance) {
+            if (
+                dateDiffInDays(dateArray[i], dateArray[i + repeatance]) >
+                repeatance
+            ) {
                 console.log("Repeatance not found");
 
                 return null;
             }
         }
 
-        if(found) {
+        if (found) {
             console.log("Repeatance found:", repeatance);
 
             return repeatance;
@@ -48,7 +52,7 @@ function findRepeatance(dateArray) {
 }
 
 /**
- * 
+ *
  * @param {ICalCalendar} cal
  * @param {Object} subjectJson
  * @returns {ical.Event}
@@ -57,14 +61,22 @@ function addSubject(cal, subjectJson) {
     let description = "";
     description += `Aine kood: ${subjectJson["subjectCode"]}\n`;
     description += `Aine nimi: ${subjectJson["subjectName"]}\n`;
-    description += `Õppejõud: ${subjectJson["teachers"].map((teacher) => teacher["teacherName"]).join(", ")}\n`;
-    description += `Ruum: ${subjectJson["rooms"].map((room) => room["roomNo"]).join(", ")}\n`;
+    description += `Õppejõud: ${subjectJson["teachers"]
+        .map((teacher) => teacher["teacherName"])
+        .join(", ")}\n`;
+    description += `Ruum: ${subjectJson["rooms"]
+        .map((room) => room["roomNo"])
+        .join(", ")}\n`;
 
-    const location = subjectJson["rooms"].map((room) => room["roomNo"]).join(", ");
+    const location = subjectJson["rooms"]
+        .map((room) => room["roomNo"])
+        .join(", ");
 
-    const repeatance = findRepeatance(subjectJson["dts"].map((dts) => parseYYYYMMDD(dts["date"])));
+    const repeatance = findRepeatance(
+        subjectJson["dts"].map((dts) => parseYYYYMMDD(dts["date"]))
+    );
 
-    if(!repeatance) {
+    if (!repeatance) {
         subjectJson["dts"].forEach((dts) => {
             cal.createEvent({
                 start: dts["date"] + "T" + subjectJson["startTime"],
@@ -93,7 +105,7 @@ function addSubject(cal, subjectJson) {
 }
 
 function createICal(scheduleJson) {
-    let cal = ical({domain: 'taltech.ee'});
+    let cal = ical({ domain: "taltech.ee" });
     cal.method(ICalCalendarMethod.PUBLISH);
 
     scheduleJson["weekDays"].forEach((weekDay) => {
@@ -107,21 +119,17 @@ function createICal(scheduleJson) {
 
 module.exports.createICal = createICal;
 
-
-
-
-
 function downloadFile(file) {
     // Create a link and set the URL using `createObjectURL`
     const link = document.createElement("a");
     link.style.display = "none";
     link.href = URL.createObjectURL(file);
     link.download = file.name;
-  
+
     // It needs to be added to the DOM so it can be clicked
     document.body.appendChild(link);
     link.click();
-  
+
     // To make this work on Firefox we need to wait
     // a little while before removing it.
     setTimeout(() => {
@@ -130,13 +138,11 @@ function downloadFile(file) {
     }, 0);
 }
 
-function downloadICal(scheduleJson) {
+export function downloadICal(scheduleJson) {
     const cal = createICal(scheduleJson);
 
-    const file = new Blob([cal.toString()], {type: "text/calendar"});
+    const file = new Blob([cal.toString()], { type: "text/calendar" });
     file.name = "schedule.ics";
 
     downloadFile(file);
 }
-
-module.exports.downloadICal = downloadICal;
