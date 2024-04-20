@@ -1,25 +1,34 @@
 "use client";
 
-import { HTMLAttributes } from "react";
 import "@/app/page.css";
 import {
     HoverCard,
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { generateLayout } from "@/lib/layout";
+import { useState } from "react";
 
-function Card({
-    style,
-    children,
-    onClick,
-    onMouseOver,
-}: HTMLAttributes<HTMLDivElement>) {
+function Card({ style, children, className, code }) {
+    const [isHover, setIsHover] = useState(false);
+
     return (
         <HoverCard openDelay={300}>
             <HoverCardTrigger
-                style={style}
-                className="bg-red-400 grid text-ellipsis overflow-hidden text-nowrap hover:text-base hover:brightness-110 transition-all"
-            ></HoverCardTrigger>
+                onMouseEnter={() => setIsHover(true)}
+                onMouseLeave={() => setIsHover(false)}
+                style={{
+                    ...style,
+                    marginLeft: isHover ? "0" : style.marginLeft,
+                    marginRight: isHover ? "0" : style.marginRight,
+                }}
+                className={
+                    "shadow-md p-1 rounded border hover:z-30 hover:text-base transition-all duration-300" +
+                    className
+                }
+            >
+                {code}
+            </HoverCardTrigger>
             <HoverCardContent side="right" align="start">
                 {children}
             </HoverCardContent>
@@ -31,10 +40,8 @@ export default function Schedule({ day }) {
     if (day == undefined) {
         return null;
     }
-    const timeToIndex = (time: string) => {
-        if (time === null) {
-            return "";
-        }
+
+    const timeToIndex = (time: string): number => {
         let times = time.split(":");
         // Convert time to grid index
         // The grid is made up of 15 minute cells
@@ -43,28 +50,6 @@ export default function Schedule({ day }) {
         let minute = +times[1] / 15;
 
         return hour + minute + 1; // Css grid index starts at 1
-    };
-
-    const createCards = (weekCodes: string[]) => {
-        // Extract numbers from week codes and sort in ascending order
-        const codes = weekCodes
-            .map((code) => Number(code.slice(6)))
-            .sort((a, b) => a - b);
-        // Find all sequential week codes and create ranges
-        const ranges = codes.reduce((acc: number[][], num, index) => {
-            if (index === 0) {
-                acc.push([num]);
-            }
-            if (index !== 0 && codes[index - 1] !== num - 1) {
-                acc.push([num]);
-            }
-            if (codes[index + 1] !== num + 1) {
-                acc[acc.length - 1].push(num);
-            }
-            return acc;
-        }, []);
-
-        return ranges;
     };
 
     const generateTimeStrings = () => {
@@ -90,17 +75,6 @@ export default function Schedule({ day }) {
             .filter((timeString) => timeString !== null); // Filter out null values
     };
 
-    const weekDays = {
-        1: "Monday",
-        2: "Tuesday",
-        3: "Wednesday",
-        4: "Thursday",
-        5: "Friday",
-        6: "Saturday",
-        7: "Sunday",
-        "-1": "Online",
-    };
-
     return (
         <div className="grid border-gray-600 grid-flow-row grid-cols-[repeat(17,1fr)] grid-rows-[repeat(58,1fr)]">
             <div id="week" key={0} className="border-r border-b"></div>
@@ -124,45 +98,60 @@ export default function Schedule({ day }) {
                     {timeString}
                 </div>
             ))}
-            {day.rows.map((row) =>
-                createCards(row.weekCodes).map((code, key) => {
-                    if (row.time === null) {
+            {generateLayout(day.rows).map((week) =>
+                week.map((group) =>
+                    group.items.map((item) => {
+                        if (item.row.time === null) {
+                            return null
+                        }
                         return (
                             <Card
-                                id="cards"
-                                className=""
+                                code={item.row.subjectCode}
+                                key={item.id}
+                                className={
+                                    group.cols !== 1
+                                        ? " text-[0] hover:backdrop-blur-sm "
+                                        : " hover:brightness-110"
+                                }
                                 style={{
-                                    gridRowStart: 2,
-                                    gridRowEnd: 5,
-                                    gridColumnStart: 1 + code[0],
-                                    gridColumnEnd: 2 + code[1],
+                                    marginLeft: `${
+                                        item.pos * (100 / group.cols)
+                                    }%`,
+                                    marginRight: `${
+                                        (group.cols - (item.pos + 1)) *
+                                        (100 / group.cols)
+                                    }%`,
+                                    gridRowStart:
+                                        1 + timeToIndex(item.row.startTime),
+                                    gridRowEnd: 1 + timeToIndex(item.row.endTime),
+                                    gridColumnStart: 1 + group.week,
+                                    gridColumnEnd: 2 + group.week,
+                                    backgroundColor: `hsla(${item.color[0]},${item.color[1]}%,${item.color[2]}%, 0.5)`,
+                                    borderColor: `hsla(${item.color[0]},${item.color[1]}%,${item.color[2]}%, 0.9)`,
+                                    color: `hsl(${item.color[0]},${
+                                        item.color[1]
+                                    }%,${40}%)`,
                                 }}
                             >
-                                {key === 0 ? row.subjectName : ""}
+                                {item.row.subjectName}
                                 <br></br>
-                                {key === 0 ? row.subjectCode : ""}
+                                {item.row.subjectCode}
+                                <br></br>
+                                {item.row.time}
+                                <br></br>
+                                {"Cols: " + group.cols}
+                                <br></br>
+                                {"Pos: " + item.pos}
+                                <br></br>
+                                {"Draw: " + item.id}
+                                <br></br>
+                                {"GroupId: " + group.id}
+                                <br></br>
+                                {group.method}
                             </Card>
                         );
-                    }
-                    return (
-                        <Card
-                            id="cards"
-                            className=""
-                            style={{
-                                gridRowStart: 1 + timeToIndex(row.startTime),
-                                gridRowEnd: 1 + timeToIndex(row.endTime),
-                                gridColumnStart: 1 + code[0],
-                                gridColumnEnd: 2 + code[1],
-                            }}
-                        >
-                            {key === 0 ? row.subjectName : ""}
-                            <br></br>
-                            {key === 0 ? row.subjectCode : ""}
-                            <br></br>
-                            {key === 0 ? row.time : ""}
-                        </Card>
-                    );
-                })
+                    })
+                )
             )}
         </div>
     );
