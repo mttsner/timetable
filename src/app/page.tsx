@@ -7,6 +7,7 @@ import {
 import Search from "./search";
 import Overview from "./overview";
 import Timetable from "./timetable";
+import Export from "./export";
 
 interface TimetableState {
     timetables: { [key: number]: any };
@@ -71,6 +72,7 @@ export default function Home() {
                 </div>
                 <div className="flex-1 overflow-hidden">
                     <Timetable></Timetable>
+                    <Export></Export>
                 </div>
             </div>
         </div>
