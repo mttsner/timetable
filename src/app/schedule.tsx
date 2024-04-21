@@ -6,7 +6,7 @@ import {
 import { generateLayout } from "@/lib/layout";
 import { useState } from "react";
 
-function Card({ style, children, className, code }) {
+function Card({ style, children, className, code }: any) {
     const [isHover, setIsHover] = useState(false);
 
     return (
@@ -33,7 +33,7 @@ function Card({ style, children, className, code }) {
     );
 }
 
-export default function Schedule({ day }) {
+export default function Schedule({ day }: any) {
     if (day == undefined) {
         return null;
     }

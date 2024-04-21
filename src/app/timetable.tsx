@@ -14,7 +14,7 @@ enum WeekDays {
     Online = -1,
 }
 
-function ScheduleTab({ day }) {
+function ScheduleTab({ day }: any) {
     return (
         <ScrollArea className="h-full">
             <Schedule day={day} />
@@ -45,56 +45,56 @@ export default function Timetable() {
             <TabsContent value="monday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Monday
+                        (day: any) => day.dow == WeekDays.Monday
                     )}
                 />
             </TabsContent>
             <TabsContent value="tuesday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Tuesday
+                        (day: any) => day.dow == WeekDays.Tuesday
                     )}
                 />
             </TabsContent>
             <TabsContent value="wednesday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Wednesday
+                        (day: any) => day.dow == WeekDays.Wednesday
                     )}
                 />
             </TabsContent>
             <TabsContent value="thursday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Thursday
+                        (day: any) => day.dow == WeekDays.Thursday
                     )}
                 />
             </TabsContent>
             <TabsContent value="friday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Friday
+                        (day: any) => day.dow == WeekDays.Friday
                     )}
                 />
             </TabsContent>
             <TabsContent value="saturday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Saturday
+                        (day: any) => day.dow == WeekDays.Saturday
                     )}
                 />
             </TabsContent>
             <TabsContent value="sunday" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Sunday
+                        (day: any) => day.dow == WeekDays.Sunday
                     )}
                 />
             </TabsContent>
             <TabsContent value="online" className="flex-1 overflow-hidden">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day) => day.dow == WeekDays.Online
+                        (day: any) => day.dow == WeekDays.Online
                     )}
                 />
             </TabsContent>
