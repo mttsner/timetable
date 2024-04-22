@@ -6,11 +6,15 @@ import "./globals.css";
 import { Download } from 'lucide-react';
 
 export default function Export() {
+    const schedule = useTimetableStore(
+        (state) => state.timetables[state.currentTimetableId]
+    );
+
     return (
         <Button
             className="absolute bottom-2 left-2 bg-white border border-black rounded border-opacity-50 shadow-md"
             size="icon"
-            onClick={() => downloadICal(useTimetableStore)}>
+            onClick={() => downloadICal(schedule)}>
             <Download className="w-8 h-8 stroke-black" />
         </Button>
     );
