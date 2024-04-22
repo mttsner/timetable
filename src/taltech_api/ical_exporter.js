@@ -104,7 +104,9 @@ function addSubject(cal, subjectJson) {
     });
 }
 
-function createICal(scheduleJson) {
+export function createICal(scheduleJson) {
+    console.log("scheduleJson", scheduleJson);
+
     let cal = ical({ domain: "taltech.ee" });
     cal.method(ICalCalendarMethod.PUBLISH);
 
@@ -116,8 +118,6 @@ function createICal(scheduleJson) {
 
     return cal;
 }
-
-module.exports.createICal = createICal;
 
 function downloadFile(file) {
     // Create a link and set the URL using `createObjectURL`
