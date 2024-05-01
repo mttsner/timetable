@@ -136,7 +136,9 @@ export default function Schedule({ day }: any) {
                                 <br></br>
                                 {item.row.time}
                                 <br></br>
-                                {"Cols: " + group.cols}
+                                {"Rooms: " + group.rooms.forEach(element => {
+                                    element.roomNo.join(", ")
+                                })}
                                 <br></br>
                                 {"Pos: " + item.pos}
                                 <br></br>
