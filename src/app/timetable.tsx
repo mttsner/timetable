@@ -31,7 +31,7 @@ export default function Timetable() {
     );
     
     return (
-        <Tabs defaultValue="monday" className="h-full w-full flex flex-col ">
+        <Tabs defaultValue="monday" className="h-full w-full flex flex-col background-image" >
             <TabsList className="grid w-full grid-cols-8">
                 <TabsTrigger value="monday">Esmaspäev</TabsTrigger>
                 <TabsTrigger value="tuesday">Teisipäev</TabsTrigger>
@@ -41,57 +41,57 @@ export default function Timetable() {
                 <TabsTrigger value="saturday">Laupäev</TabsTrigger>
                 <TabsTrigger value="sunday">Pühapäev</TabsTrigger>
                 <TabsTrigger value="online">Distants</TabsTrigger>
-            </TabsList>
-            <TabsContent value="monday" className="flex-1 overflow-hidden">
+            </TabsList>    
+            <TabsContent value="monday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
-                        (day: any) => day.dow == WeekDays.Monday
+                        (day: any) => day.dow == WeekDays.Monday,
                     )}
                 />
             </TabsContent>
-            <TabsContent value="tuesday" className="flex-1 overflow-hidden">
+            <TabsContent value="tuesday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Tuesday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="wednesday" className="flex-1 overflow-hidden">
+            <TabsContent value="wednesday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Wednesday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="thursday" className="flex-1 overflow-hidden">
+            <TabsContent value="thursday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Thursday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="friday" className="flex-1 overflow-hidden">
+            <TabsContent value="friday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Friday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="saturday" className="flex-1 overflow-hidden">
+            <TabsContent value="saturday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Saturday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="sunday" className="flex-1 overflow-hidden">
+            <TabsContent value="sunday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Sunday
                     )}
                 />
             </TabsContent>
-            <TabsContent value="online" className="flex-1 overflow-hidden">
+            <TabsContent value="online" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
                     day={schedule.weekDays.find(
                         (day: any) => day.dow == WeekDays.Online

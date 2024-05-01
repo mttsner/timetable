@@ -136,6 +136,8 @@ export default function Schedule({ day }: any) {
                                 <br></br>
                                 {item.row.time}
                                 <br></br>
+                                {"Rooms: " + item.row.rooms.map((room: any) => room.roomNo).join(", ")}
+                                <br></br>
                                 {"Cols: " + group.cols}
                                 <br></br>
                                 {"Pos: " + item.pos}
