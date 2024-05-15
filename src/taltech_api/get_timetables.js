@@ -26,7 +26,7 @@
  */
 export async function getTimetables() {
     const res = await fetch(
-        "https://tunniplaan.taltech.ee/tt/api/public/timetables"
+        "api/timetables"
     );
 
     const json = await res.json();

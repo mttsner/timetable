@@ -1,6 +1,6 @@
 export async function getSubject(timetableId, subjectId) {
     const res = await fetch(
-        "https://tunniplaan.taltech.ee/tt/api/public/search",
+        "api/search",
         {
             method: "POST",
             headers: {
