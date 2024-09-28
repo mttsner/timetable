@@ -30,6 +30,11 @@ export default function Search() {
     const [open, setOpen] = useState(false);
     // Update programs and subjects when timetable id changes
     useEffect(() => {
+        // Terminate early if correct current timetableId hasn't been set
+        if (timetableId === 0) {
+            return;
+        }
+        // Fetch course list
         (async () => {
             // Get courses
             const courses = await getCourses(timetableId);
@@ -38,8 +43,11 @@ export default function Search() {
             setSubjects(courses.map((course: any) => course.code));
             // Get deparments
             const departments = await getDepartments(timetableId);
+            if (!departments) {
+                return
+            }
             setDepartments(departments);
-            // Extrat program codes from departments
+            // Extract program codes from departments
             setPrograms(
                 departments.flatMap((department: any) =>
                     department.curriculums.flatMap((curriculum: any) =>

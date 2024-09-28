@@ -44,56 +44,56 @@ export default function Timetable() {
             </TabsList>    
             <TabsContent value="monday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Monday,
                     )}
                 />
             </TabsContent>
             <TabsContent value="tuesday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Tuesday
                     )}
                 />
             </TabsContent>
             <TabsContent value="wednesday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Wednesday
                     )}
                 />
             </TabsContent>
             <TabsContent value="thursday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Thursday
                     )}
                 />
             </TabsContent>
             <TabsContent value="friday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Friday
                     )}
                 />
             </TabsContent>
             <TabsContent value="saturday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Saturday
                     )}
                 />
             </TabsContent>
             <TabsContent value="sunday" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Sunday
                     )}
                 />
             </TabsContent>
             <TabsContent value="online" className="flex-1 overflow-hidden background-overlay">
                 <ScheduleTab
-                    day={schedule.weekDays.find(
+                    day={schedule?.weekDays.find(
                         (day: any) => day.dow == WeekDays.Online
                     )}
                 />

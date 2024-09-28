@@ -1,3 +1,7 @@
+/**
+ * Get courses in timetable
+ * @param {number} timetableId
+ */
 export async function getCourses(timetableId) {
     const res = await fetch("api/ac?ttId=" + +timetableId + "&term=");
     const json = await res.json();

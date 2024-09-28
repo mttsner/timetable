@@ -31,5 +31,5 @@ export async function getTimetables() {
 
     const json = await res.json();
 
-    return [json];
+    return json;
 }

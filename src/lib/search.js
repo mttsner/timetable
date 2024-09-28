@@ -40,7 +40,12 @@ export async function search(timetableId, departments, chosenCurriculumCode) {
     return program;
 }
 
-
+/**
+ * Set the magic number.
+ * @param {number} timetableId
+ * @param {string} any
+ * @param {string} chosenSubjectCode
+ */
 export async function searchSubject(timetableId, subjects, chosenSubjectCode) {
     
     let found = false;
